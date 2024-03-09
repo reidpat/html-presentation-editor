@@ -50,10 +50,16 @@
     // const currentContent = editor.getContent();
     // const htmlContentWithDiv = wrapWithDiv(currentContent, savedStyles);
 
+    function parseStyleObject(styleObj) {
+        return Object.entries(styleObj)
+            .map(([k, v]) => `${k}: ${v}`)
+            .join("; ");
+    }
+
     function onResize(entry) {
         let editorDiv = entry.target;
-        let width = editorDiv.firstChild.offsetWidth + "px";
-        let height = editorDiv.firstChild.offsetHeight + "px";
+        let width = editorDiv.offsetWidth + "px";
+        let height = editorDiv.offsetHeight + "px";
 
         // Parse savedStyles into an object
         let styleObj = parseStyleString(savedStyles);
@@ -62,12 +68,10 @@
         styleObj.width = width;
         styleObj.height = height;
 
-        console.log("Resized to:", width, height);
+        // console.log("Resized to:", width, height);
 
         // Convert the style object back to a string
-        savedStyles = Object.entries(styleObj)
-            .map(([k, v]) => `${k}: ${v}`)
-            .join("; ");
+        savedStyles = parseStyleObject(styleObj);
 
         // Update the HTML content with new styles
         let updatedHtmlContent = wrapWithDiv(editor.getHTML(), savedStyles);
@@ -88,8 +92,7 @@
             element: element,
             editorProps: {
                 attributes: {
-                    style: styles, // Convert the styles object to a string
-                    // You can add additional attributes here if needed
+                    style: "position: absolute; top: 0px; left: 0px",
                 },
             },
             extensions: [StarterKit, CustomDiv],
@@ -106,8 +109,59 @@
                 );
             },
         });
-        console.log(editor.getHTML());
+        // console.log(editor.getHTML());
     });
+
+    let startX, startY, initialX, initialY;
+    let isDragging = false;
+
+    let dragStartPosition = { x: 0, y: 0 };
+    let editorStartPosition = { x: 0, y: 0 };
+    let dragging = false;
+
+    function onDragStart(event) {
+        dragStartPosition = {
+            x: event.clientX,
+            y: event.clientY,
+        };
+        editorStartPosition = {
+            x: parseInt(element.style.left, 10) || 0,
+            y: parseInt(element.style.top, 10) || 0,
+        };
+        document.addEventListener("mousemove", onDragMove);
+        document.addEventListener("mouseup", onDragEnd);
+        dragging = true;
+    }
+
+    function onDragMove(event) {
+        if (!dragging) return;
+        const dx = event.clientX - dragStartPosition.x;
+        const dy = event.clientY - dragStartPosition.y;
+        element.style.left = `${editorStartPosition.x + dx}px`;
+        element.style.top = `${editorStartPosition.y + dy}px`;
+    }
+
+    function onDragEnd(event) {
+        dragging = false;
+        document.removeEventListener("mousemove", onDragMove);
+        document.removeEventListener("mouseup", onDragEnd);
+        // Update the savedStyles with the new position
+        let styleObj = parseStyleString(savedStyles);
+        styleObj.position = 'absolute';
+        styleObj.left = element.style.left;
+        styleObj.top = element.style.top;
+        console.log(styleObj);
+        
+        savedStyles = parseStyleObject(styleObj);
+        console.log(savedStyles)
+
+
+        // savedStyles =
+        //     `position: absolute; left: ${element.style.left}; top: ${element.style.top};` +
+        //     savedStyles;
+        // // Dispatch an update with the new styles
+        dispatch("contentChanged", wrapWithDiv(editor.getHTML(), savedStyles));
+    }
 
     onDestroy(() => {
         if (editor) {
@@ -116,7 +170,7 @@
     });
 </script>
 
-{#if editor}
+<!-- {#if editor}
     <button
         on:click={() =>
             editor.chain().focus().toggleHeading({ level: 1 }).run()}
@@ -137,17 +191,51 @@
     >
         P
     </button>
-{/if}
+{/if} -->
 
-<div bind:this={element} use:resize={onResize} />
+<div
+    bind:this={element}
+    use:resize={onResize}
+    class="editor-container"
+    style={savedStyles}
+>
+    <div class="editor-buttons"><button class="drag-handle" on:mousedown={onDragStart}>Drag</button></div>
+</div>
 
 <style>
+    .editor-container {
+        position: relative;
+        border: 1px solid black; /* Adjust the size as needed */
+        border-style: solid; /* Style the border to make it visible or as desired */
+        box-sizing: border-box; /* To include the border in width and height calculations */
+        resize: both !important;
+        overflow: hidden;
+        padding: 0px;
+        margin: 0px;
+        /* Other styles as needed */
+    }
+    .editor-buttons {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        z-index: 2;
+    }
+
+    .drag-handle {
+        position: absolute; /* Position the button absolutely within the editor-container */
+        top: 0; /* Align to the top edge */
+        right: 0; /* Align to the right edge */
+        cursor: move; /* Cursor indicates it can be dragged */
+        background-color: #fff; /* Background color to cover any underlying content */
+        /* Add additional styling to match your button design */
+    }
+
     button.active {
         background: black;
         color: white;
     }
     :global(.tiptap) {
-        resize: both !important;
-        overflow: hidden;
+        width: 100%;
+        height: 100%;
     }
 </style>

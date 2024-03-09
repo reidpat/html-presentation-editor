@@ -26,8 +26,6 @@
     function toggleMode() {
         isRawMode = !isRawMode;
     }
-
-    $: console.log(htmlContent);
 </script>
 
 <div class="editor-box">
