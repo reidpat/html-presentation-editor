@@ -9,6 +9,7 @@
         const response = await fetch(`/slides/${filename}`);
         if (response.ok) {
             htmlContent = await response.text();
+            console.log(htmlContent);
         } else {
             console.error("Failed to load slide:", response.status);
         }
@@ -53,8 +54,9 @@
         }
     }
 
-    function handleContentChange(htmlContent){
-        htmlContent = htmlContent;
+    function handleContentChange(event){
+        htmlContent = event.detail.htmlContent;
+        // htmlContent = htmlContent;
         debounceSave();
     }
 

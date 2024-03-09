@@ -1,8 +1,9 @@
 <!-- EditorBox.svelte -->
 
 <script>
-    import { createEventDispatcher } from "svelte";
+    import { createEventDispatcher, onMount } from "svelte";
     import ResizableBox from "./ResizableBox.svelte";
+    import TipTap from "./TipTap.svelte";
 
     export let htmlContent = ""; // HTML content
     export let isRawMode = true; // Variable to track raw HTML mode
@@ -25,38 +26,22 @@
     function toggleMode() {
         isRawMode = !isRawMode;
     }
+
+    $: console.log(htmlContent);
 </script>
 
 <div class="editor-box">
-    <div class="buttons">
-        <button>Drag</button>
-        <button on:click={toggleMode}>
-            {isRawMode ? "T" : "</>"}
-        </button>
-    </div>
-
-    {#if isRawMode}
-        <ResizableBox>
-            <textarea bind:value={htmlContent} on:input={handleRawHTMLInput}
-            ></textarea>
-        </ResizableBox>
-        <!-- Edit raw HTML content -->
-    {:else}
-        <ResizableBox>
-            <div contenteditable on:input={handleRenderedContentInput}>
-                {@html htmlContent}
-            </div>
-        </ResizableBox>
-        <!-- Render raw HTML content -->
+    {#if htmlContent}
+        <TipTap content={htmlContent} on:contentChanged={event => dispatch("contentChanged", {htmlContent: event.detail})}/> 
     {/if}
+    
 
     <!-- Toggle button to switch between raw and rendered mode -->
 </div>
 
 <style>
     .editor-box {
-        display: flex;
-        flex-direction: column;
+       
     }
 
     textarea,

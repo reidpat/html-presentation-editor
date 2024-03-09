@@ -15,5 +15,11 @@
 		"svelte": "^4.2.7",
 		"vite": "^5.0.3"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"@tiptap/core": "^2.2.4",
+		"@tiptap/pm": "^2.2.4",
+		"@tiptap/starter-kit": "^2.2.4",
+		"svelte-resize-observer-action": "^0.0.3"
+	}
 }
