@@ -58,8 +58,19 @@
 
     function onResize(entry) {
         let editorDiv = entry.target;
-        let width = editorDiv.offsetWidth + "px";
-        let height = editorDiv.offsetHeight + "px";
+        let widthPercentage = Math.round(
+            (editorDiv.offsetWidth /
+                editorDiv.parentNode.parentNode.offsetWidth) *
+                100,
+        );
+        let heightPercentage = Math.round(
+            (editorDiv.offsetHeight /
+                editorDiv.parentNode.parentNode.offsetHeight) *
+                100,
+        );
+
+        let width = `${widthPercentage}%`;
+        let height = `${heightPercentage}%`;
 
         // Parse savedStyles into an object
         let styleObj = parseStyleString(savedStyles);
@@ -68,10 +79,14 @@
         styleObj.width = width;
         styleObj.height = height;
 
+        element.style.width = width;
+        element.style.height = height;
+
         // console.log("Resized to:", width, height);
 
         // Convert the style object back to a string
         savedStyles = parseStyleObject(styleObj);
+        // element.style = savedStyles;
 
         // Update the HTML content with new styles
         let updatedHtmlContent = wrapWithDiv(editor.getHTML(), savedStyles);
@@ -92,7 +107,7 @@
             element: element,
             editorProps: {
                 attributes: {
-                    style: "position: absolute; top: 0px; left: 0px",
+                    style: "position: absolute; top: 0%; left: 0%",
                 },
             },
             extensions: [StarterKit, CustomDiv],
@@ -125,8 +140,9 @@
             y: event.clientY,
         };
         editorStartPosition = {
-            x: parseInt(element.style.left, 10) || 0,
-            y: parseInt(element.style.top, 10) || 0,
+            // Calculate initial positions as percentages of the parent dimensions
+            x: (element.offsetLeft / element.offsetParent.offsetWidth) * 100,
+            y: (element.offsetTop / element.offsetParent.offsetHeight) * 100,
         };
         document.addEventListener("mousemove", onDragMove);
         document.addEventListener("mouseup", onDragEnd);
@@ -135,10 +151,18 @@
 
     function onDragMove(event) {
         if (!dragging) return;
-        const dx = event.clientX - dragStartPosition.x;
-        const dy = event.clientY - dragStartPosition.y;
-        element.style.left = `${editorStartPosition.x + dx}px`;
-        element.style.top = `${editorStartPosition.y + dy}px`;
+
+        // Get the parent dimensions
+        const parentWidth = element.offsetParent.offsetWidth;
+        const parentHeight = element.offsetParent.offsetHeight;
+
+        // Calculate the change in mouse position as a percentage of the parent dimensions
+        const dx = ((event.clientX - dragStartPosition.x) / parentWidth) * 100;
+        const dy = ((event.clientY - dragStartPosition.y) / parentHeight) * 100;
+
+        // Update the element's position in percentages
+        element.style.left = `calc(${editorStartPosition.x}% + ${dx}%)`;
+        element.style.top = `calc(${editorStartPosition.y}% + ${dy}%)`;
     }
 
     function onDragEnd(event) {
@@ -147,14 +171,14 @@
         document.removeEventListener("mouseup", onDragEnd);
         // Update the savedStyles with the new position
         let styleObj = parseStyleString(savedStyles);
-        styleObj.position = 'absolute';
+        styleObj.position = "absolute";
         styleObj.left = element.style.left;
         styleObj.top = element.style.top;
         console.log(styleObj);
-        
-        savedStyles = parseStyleObject(styleObj);
-        console.log(savedStyles)
 
+        savedStyles = parseStyleObject(styleObj);
+        console.log(savedStyles);
+    
 
         // savedStyles =
         //     `position: absolute; left: ${element.style.left}; top: ${element.style.top};` +
@@ -199,7 +223,9 @@
     class="editor-container"
     style={savedStyles}
 >
-    <div class="editor-buttons"><button class="drag-handle" on:mousedown={onDragStart}>Drag</button></div>
+    <div class="editor-buttons">
+        <button class="drag-handle" on:mousedown={onDragStart}>Drag</button>
+    </div>
 </div>
 
 <style>

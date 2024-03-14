@@ -6,7 +6,7 @@
     import TipTap from "./TipTap.svelte";
 
     export let htmlContent = ""; // HTML content
-    export let isRawMode = true; // Variable to track raw HTML mode
+    // export let isRawMode = true; // Variable to track raw HTML mode
 
     const dispatch = createEventDispatcher();
 
@@ -26,6 +26,7 @@
     function toggleMode() {
         isRawMode = !isRawMode;
     }
+    $: console.log('htmlContent', htmlContent);
 </script>
 
 <div class="editor-box">
