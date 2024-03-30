@@ -2,6 +2,7 @@
     import { onMount, onDestroy } from "svelte";
     import { Editor } from "@tiptap/core";
     import StarterKit from "@tiptap/starter-kit";
+    import Image from '@tiptap/extension-image';
     import CustomDiv from "./TipTapCustom/CustomDiv"; // Import your custom node
     // import ReadOnlyOuterElement from "./TipTapCustom/ReadOnlyOuterElement"
     import { createEventDispatcher } from "svelte";
@@ -31,6 +32,8 @@
         const parser = new DOMParser();
         const doc = parser.parseFromString(htmlContent, "text/html");
         const outerDiv = doc.querySelector(".content-block");
+
+        console.log("outerDiv", outerDiv.innerHTML)
 
         let explicitStyles = "";
         if (outerDiv) {
@@ -69,6 +72,8 @@
                 100,
         );
 
+        heightPercentage = Math.max(5, heightPercentage);
+
         let width = `${widthPercentage}%`;
         let height = `${heightPercentage}%`;
 
@@ -90,6 +95,8 @@
 
         // Update the HTML content with new styles
         let updatedHtmlContent = wrapWithDiv(editor.getHTML(), savedStyles);
+        console.log(editor.getJSON())
+        console.log("updatedHTML", updatedHtmlContent)
 
         // Dispatch the updated HTML content
         dispatch("contentChanged", updatedHtmlContent);
@@ -102,29 +109,30 @@
 
     onMount(() => {
         let { innerHTML, styles } = stripOuterDiv(content);
+        console.log("tipTapinner", innerHTML)
         savedStyles = styles;
         editor = new Editor({
             element: element,
-            editorProps: {
-                attributes: {
-                    style: "position: absolute; top: 0%; left: 0%",
-                },
-            },
-            extensions: [StarterKit, CustomDiv],
+            // editorProps: {
+            //     attributes: {
+            //         style: "position: absolute; top: 0%; left: 0%",
+            //     },
+            // },
+            extensions: [StarterKit, CustomDiv, Image],
             content: innerHTML,
             onTransaction: () => {
                 // force re-render so `editor.isActive` works as expected
                 editor = editor;
             },
-            onUpdate: () => {
-                editor = editor;
-                dispatch(
-                    "contentChanged",
-                    wrapWithDiv(editor.getHTML(), savedStyles),
-                );
-            },
+            // onUpdate: () => {
+            //     editor = editor;
+            //     dispatch(
+            //         "contentChanged",
+            //         wrapWithDiv(editor.getHTML(), savedStyles),
+            //     );
+            // },
         });
-        // console.log(editor.getHTML());
+        console.log(editor.getHTML());
     });
 
     let startX, startY, initialX, initialY;
@@ -223,6 +231,11 @@
     class="editor-container"
     style={savedStyles}
 >
+<!-- <div
+    bind:this={element}
+    class="editor-container"
+    style={savedStyles}
+> -->
     <div class="editor-buttons">
         <button class="drag-handle" on:mousedown={onDragStart}>Drag</button>
     </div>

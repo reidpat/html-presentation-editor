@@ -9,13 +9,15 @@
     }
 
     
+
+    
 </script>
 
-{#if editing}
+<!-- {#if editing}
     <button on:click={changeMode}>Present</button>
     <Editor filename="slide1.html"/>
     
-{:else}
-    <button on:click={changeMode}>Edit</button>
-    <Presentation filename="slide1.html" />
-{/if}
+{:else} -->
+    <!-- <button on:click={changeMode}>Edit</button> -->
+    <Presentation filename="slide2.html" />
+<!-- {/if} -->

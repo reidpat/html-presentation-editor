@@ -26,21 +26,27 @@
     function toggleMode() {
         isRawMode = !isRawMode;
     }
-    $: console.log('htmlContent', htmlContent);
+    $: console.log("htmlContent", htmlContent);
 </script>
 
 <div class="editor-box">
     {#if htmlContent}
-        <TipTap content={htmlContent} on:contentChanged={event => dispatch("contentChanged", {htmlContent: event.detail})}/> 
+        <!-- <TipTap
+            content={htmlContent}
+            on:contentChanged={(event) =>
+                dispatch("contentChanged", { htmlContent: event.detail })}
+        /> -->
+        <TipTap
+            content={htmlContent}
+           
+        />
     {/if}
-    
 
     <!-- Toggle button to switch between raw and rendered mode -->
 </div>
 
 <style>
     .editor-box {
-       
     }
 
     textarea,

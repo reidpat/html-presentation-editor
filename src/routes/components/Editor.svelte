@@ -22,12 +22,23 @@
 
     // Function to parse the main content and find content blocks
     function extractContentBlocks(htmlContent) {
+        console.log("extractHTML", htmlContent)
         const parser = new DOMParser();
         const doc = parser.parseFromString(htmlContent, "text/html");
+        console.log("doc", doc)
         const blocks = doc.querySelectorAll(".content-block");
+        console.log('blocks', blocks)
 
         // Extract the innerHTML of each content-block
-        return Array.from(blocks).map((block) => block.outerHTML);
+        let arr = []
+        for(let i = 0; i < blocks.length; i++){
+            let str = blocks[i].outerHTML;
+            console.log("str", str);
+            arr.push(str)
+        }
+        console.log(arr);
+        return arr;
+        // return Array.from(blocks).map((block) => {console.log(block, block.outerHTML); return block.outerHTML});
     }
 
     // Load initial content and parse content blocks
@@ -105,6 +116,16 @@
         contentBlocks = [...contentBlocks, newBlockContent];
     }
 
+    function addImage() {
+        const imageUrl = prompt('Enter image URL');
+        if (imageUrl) {
+            // Add the new image block to contentBlocks
+            const imageBlock = `<div class="content-block"><img src="${imageUrl}" alt="Image"></div>`;
+            contentBlocks = [...contentBlocks, imageBlock];
+        }
+
+    }
+
     // Function to handle changes in the rendered content (using Svelte reactive statement)
     // $: {
     //     debounceSave(); // Debounced save operation
@@ -114,6 +135,7 @@
 </script>
 
 <button on:click={addNewBlock}>Add new block</button>
+<button on:click={addImage}>Add Image</button>
 <Slide>
     {#if contentBlocks}
         {#each contentBlocks as blockHtml, index (index)}

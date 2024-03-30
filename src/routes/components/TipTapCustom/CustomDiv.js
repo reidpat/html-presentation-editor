@@ -1,4 +1,4 @@
-import { Node, mergeAttributes } from '@tiptap/core'
+import { Node, mergeAttributes } from '@tiptap/core';
 
 const CustomDiv = Node.create({
   name: 'customDiv',
@@ -9,16 +9,29 @@ const CustomDiv = Node.create({
   parseHTML() {
     return [
       {
-        tag: 'div.custom-div', // Target your specific div class
+        tag: 'div.custom-div',
       },
-    ]
+    ];
   },
 
-  renderHTML({ node, HTMLAttributes }) {
-    return ['div', { ...HTMLAttributes, class: 'custom-div' }, 0]
+  addAttributes() {
+    return {
+      style: {
+        default: null,
+        parseHTML: element => element.getAttribute('style'),
+        renderHTML: attributes => {
+          if (!attributes.style) {
+            return {};
+          }
+          return { style: attributes.style };
+        },
+      },
+    };
   },
 
-  
-})
+  renderHTML({ HTMLAttributes }) {
+    return ['div', mergeAttributes(HTMLAttributes, { class: 'custom-div' }), 0];
+  },
+});
 
 export default CustomDiv;

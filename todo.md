@@ -1,0 +1,11 @@
+- Integrate AI editing into the workflow
+  - openAI api key storage
+  - basic interface dialogue
+    - styling
+    - content
+- Add images 
+  - c+v for now
+  - add them to the assets folder manually
+- start work on the presentation layer
+  - linking along one dimension
+- github file syncing

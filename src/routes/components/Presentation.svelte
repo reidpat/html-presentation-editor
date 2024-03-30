@@ -5,6 +5,8 @@
     let htmlContent = '';
     export let filename;
 
+    let presentation = ['']
+
     async function loadSlideContent(filename) {
         const response = await fetch(`/slides/${filename}`);
         if (response.ok) {
@@ -15,7 +17,7 @@
     }
 
     onMount(() => {
-        loadSlideContent(filename); // Replace 'slide1.html' with your filename
+        loadSlideContent(filename);
     });
 </script>
 
