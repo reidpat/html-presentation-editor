@@ -5,7 +5,11 @@
     let htmlContent = '';
     export let filename;
 
-    let presentation = ['']
+    let presentation = ['slide1.html', 'slide2.html']
+
+    async function loadPresentation(presentation){
+        
+    }
 
     async function loadSlideContent(filename) {
         const response = await fetch(`/slides/${filename}`);
@@ -17,6 +21,7 @@
     }
 
     onMount(() => {
+
         loadSlideContent(filename);
     });
 </script>

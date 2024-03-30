@@ -1,13 +1,23 @@
-<!-- Slide.svelte -->
+<script context="module">
+    export async function load({ params, fetch }) {
+        const { slide } = params;
+        const response = await fetch(`/slides/${slide}.md`);
+        if (!response.ok) {
+            // Handle error, e.g., redirect to a custom error page or show a message
+            return { status: response.status, error: new Error('Slide not found') };
+        }
+        const content = await response.text();
+        return { props: { content } };
+    }
+</script>
 
 <script>
-    // You can add any necessary props or logic here
+    export let content;
 </script>
 
 <div class="slide-container">
     <div class="slide-content">
-        <slot />
-        <!-- Slot to accept content from the editor -->
+        {@html content}
     </div>
 </div>
 

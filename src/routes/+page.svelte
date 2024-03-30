@@ -1,23 +1,18 @@
 <script>
-    import Editor from "./components/Editor.svelte";
-    import Presentation from "./components/Presentation.svelte";
+    import Editor from "../lib/components/Editor.svelte";
+    import Presentation from "../lib/components/Presentation.svelte";
 
     let editing = true;
 
     function changeMode() {
         editing = !editing;
     }
-
-    
-
-    
+ 
+    let slides = ['slide1', 'slide2', 'slide3']; // Array of slide names
 </script>
 
-<!-- {#if editing}
-    <button on:click={changeMode}>Present</button>
-    <Editor filename="slide1.html"/>
-    
-{:else} -->
-    <!-- <button on:click={changeMode}>Edit</button> -->
-    <Presentation filename="slide2.html" />
-<!-- {/if} -->
+<div>
+    {#each slides as slide}
+        <a href={`/${slide}`}>{slide}</a> <!-- Links to each slide -->
+    {/each}
+</div>
