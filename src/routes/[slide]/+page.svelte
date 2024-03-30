@@ -1,10 +1,26 @@
 <script>
     import { onMount } from "svelte";
+    import { goto } from "$app/navigation";
+    // Function to navigate to the next slide
+    function goToNextSlide(currentSlide) {
+        // Logic to determine the next slide name
+        // e.g., increment slide number, check against total slides, etc.
+        const nextSlide = determineNextSlideName(currentSlide);
+        goto(`/${nextSlide}`);
+    }
+
+    // Function to navigate to the previous slide
+    function goToPreviousSlide(currentSlide) {
+        // Logic to determine the previous slide name
+        const previousSlide = determinePreviousSlideName(currentSlide);
+        goto(`/${previousSlide}`);
+    }
 
     export let data;
+
     onMount(() => {
         console.log(data);
-    })
+    });
 </script>
 
 <div class="slide-container">
@@ -12,6 +28,8 @@
         {@html data.content}
     </div>
 </div>
+<button on:click={() => goToPreviousSlide(data.slide)}>Previous</button>
+<button on:click={() => goToNextSlide(data.slide)}>Next</button>
 
 <style>
     /* Add styling for the slide container */

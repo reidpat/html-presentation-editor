@@ -8,5 +8,5 @@ export async function load({ params, fetch }) {
     }
     const content = await response.text();
     console.log(content);
-    return { content };
+    return { content, slide };
 }

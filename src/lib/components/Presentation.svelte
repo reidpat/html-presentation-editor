@@ -21,8 +21,7 @@
     }
 
     onMount(() => {
-
-        loadSlideContent(filename);
+        loadPresentation(presentation);
     });
 </script>
 

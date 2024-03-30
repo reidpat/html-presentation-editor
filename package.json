@@ -17,10 +17,12 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@langchain/openai": "^0.0.25",
 		"@tiptap/core": "^2.2.4",
 		"@tiptap/extension-image": "^2.2.4",
 		"@tiptap/pm": "^2.2.4",
 		"@tiptap/starter-kit": "^2.2.4",
+		"langchain": "^0.1.30",
 		"svelte-resize-observer-action": "^0.0.3"
 	}
 }
