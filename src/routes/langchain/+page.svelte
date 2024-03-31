@@ -19,8 +19,19 @@
         }
     }
 
+    async function loadFileContent(filename) {
+        const response = await fetch(`/files/${filename}`);
+        if (response.ok) {
+            res2 = await response.text();
+        } else {
+            console.error('Failed to load file:', response.status);
+        }
+        console.log(res2);
+    }
+
     let chatModel;
     let res = ""
+    let res2 = ""
 
     onMount(async () => {
         loadAPIKey();
@@ -30,7 +41,7 @@
         });
 
         res = await chatModel.invoke("what is LangSmith?");
-        console.log(res);
+        await loadFileContent('info.txt');
     });
 
     import { ChatOpenAI } from "@langchain/openai";
@@ -40,5 +51,6 @@
 <input type="text" bind:value={$OpenAI_APIKey} />
 <button on:click={saveAPIKey}>Save API Key</button>
 <p>{res.content}</p>
-    
+<p>{res2}</p>
+
 
