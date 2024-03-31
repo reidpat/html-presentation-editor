@@ -40,5 +40,5 @@
 <input type="text" bind:value={$OpenAI_APIKey} />
 <button on:click={saveAPIKey}>Save API Key</button>
 <p>{res.content}</p>
-
+    
 
