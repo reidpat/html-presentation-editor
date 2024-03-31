@@ -1,6 +1,8 @@
 <script>
     import { writable } from "svelte/store";
     import { onMount } from "svelte";
+    import { ChatOpenAI } from "@langchain/openai";
+    import { ChatMessage } from "@langchain/core/messages";
 
     let OpenAI_APIKey = writable("");
 
@@ -33,6 +35,9 @@
     let res = ""
     let res2 = ""
 
+    //https://js.langchain.com/docs/modules/model_io/concepts
+    let messages = [new ChatMessage("system message content",'system'), new ChatMessage("user message", "user"), new ChatMessage("user message", "assistant")]
+
     onMount(async () => {
         loadAPIKey();
 
@@ -40,11 +45,10 @@
             openAIApiKey: $OpenAI_APIKey,
         });
 
-        res = await chatModel.invoke("what is LangSmith?");
+        res = await chatModel.invoke(messages);
         await loadFileContent('info.txt');
     });
 
-    import { ChatOpenAI } from "@langchain/openai";
 </script>
 
 <h1>Langchain Testing</h1>
