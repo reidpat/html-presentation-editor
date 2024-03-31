@@ -23,12 +23,14 @@
 
     async function loadFileContent(filename) {
         const response = await fetch(`/files/${filename}`);
+        let res = ''
         if (response.ok) {
-            res2 = await response.text();
+            res = await response.text();
         } else {
             console.error('Failed to load file:', response.status);
         }
         console.log(res2);
+        return res;
     }
 
     let chatModel;
@@ -46,7 +48,7 @@
         });
 
         res = await chatModel.invoke(messages);
-        await loadFileContent('info.txt');
+        res2 = await loadFileContent('info.txt');
     });
 
 </script>
